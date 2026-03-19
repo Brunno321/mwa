@@ -7,36 +7,50 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+function extrairTexto(json) {
+  return json?.candidates?.[0]?.content?.parts?.map(p => p?.text || "").join("\n").trim() || "";
+}
+
 /* ==============================
-   🤖 IA PRINCIPAL (ANÁLISE GERAL)
+   🤖 IA PRINCIPAL (COM CONTEÚDO REAL)
 ============================== */
 app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
+    // 🔥 extrair títulos das atividades
+    const titulos = (dados || [])
+      .map(d => d.contextodoevento)
+      .filter(Boolean)
+      .slice(0, 15)
+      .join(" | ");
+
     const prompt = `
-Você é um especialista em Educação a Distância (EaD) e design instrucional e ainda professor do conteúdo das atividades.
+Você é um especialista em Educação a Distância (EaD), design instrucional e professor de todas as disciplinas existentes.
 
-Analise os dados do AVA (Moodle) e gere recomendações pedagógicas.
+Analise os dados do Moodle e os títulos das atividades para gerar recomendações pedagógicas e de conteúdo.
 
-⚠️ Responda OBRIGATORIAMENTE neste formato:
+TÍTULOS DAS ATIVIDADES:
+${titulos}
+
+DADOS:
+${JSON.stringify(dados)}
+
+⚠️ Responda EXATAMENTE neste formato:
 
 ### Diagnóstico
-Resumo geral do engajamento da turma (máx 5 linhas)
+Resumo do engajamento da turma (máx 5 linhas)
 
 ### Problemas Identificados
-- Liste problemas de forma objetiva
+- Liste problemas claros
 
 ### Recomendações Pedagógicas
-- Ações do professor
+- Ações práticas do professor
 
-### Recomendações de Conteúdo
-- Sugira melhorias no conteúdo didático
-- Relacione com os problemas encontrados
-- Indique conteúdos relacionados às atividades
-
-Dados:
-${JSON.stringify(dados)}
+### Sugestões de Conteúdo IA
+- Gere conteúdos diretamente relacionados aos temas das atividades
+- Ex: conceitos, teorias, práticas, materiais complementares
+- Seja específico e contextual
 `;
 
     const response = await fetch(
@@ -51,16 +65,9 @@ ${JSON.stringify(dados)}
     );
 
     const json = await response.json();
+    const texto = extrairTexto(json);
 
-    if (json?.candidates?.[0]?.content?.parts?.[0]?.text) {
-      res.json({
-        resposta: json.candidates[0].content.parts[0].text
-      });
-    } else {
-      res.json({
-        resposta: `<pre>${JSON.stringify(json, null, 2)}</pre>`
-      });
-    }
+    res.json({ resposta: texto });
 
   } catch (e) {
     res.json({
@@ -69,68 +76,9 @@ ${JSON.stringify(dados)}
   }
 });
 
-
 /* ==============================
-   🧠 IA POR CONTEÚDO (NOVO 🔥)
-============================== */
-app.post("/sugestoes", async (req, res) => {
-  try {
-    const { titulo } = req.body;
-
-    const prompt = `
-Você é especialista em educação.
-
-Você é também Professor de português, inglês, matemática, física, química, biologia, engenharia, informática,filosofia e todas as outras áreas 
-
-Analise o título de uma atividade educacional e identifique o tema principal.
-
-Título: ${titulo}
-
-Gere sugestões de conteúdos relacionados que ajudem o aluno a entender melhor o tema.
-
-⚠️ Responda SOMENTE em JSON válido:
-["conteúdo 1","conteúdo 2","conteúdo 3"]
-`;
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      }
-    );
-
-    const json = await response.json();
-
-    let texto = json?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-
-    // limpar possível texto extra
-    texto = texto.replace(/```json/g, "").replace(/```/g, "").trim();
-
-    let sugestoes = [];
-
-    try {
-      sugestoes = JSON.parse(texto);
-    } catch {
-      sugestoes = ["Conteúdo relacionado", "Material complementar", "Revisão do tema"];
-    }
-
-    res.json({ sugestoes });
-
-  } catch (e) {
-    res.json({
-      sugestoes: ["Erro ao gerar sugestões"]
-    });
-  }
-});
-
-
-/* ==============================
-   🚀 START SERVER
+   🚀 START
 ============================== */
 app.listen(10000, () => {
-  console.log("Servidor rodando na porta 10000 🚀");
+  console.log("Servidor rodando 🚀");
 });
