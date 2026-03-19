@@ -44,7 +44,7 @@ Você é um professor altamente qualificado e experiente em múltiplas áreas do
 Analise os dados e gere:
 
 ### Diagnóstico
-Resumo do engajamento
+Resumo do engajamento com base nos dados apresentados no geral
 
 ### Problemas Identificados
 Liste problemas
