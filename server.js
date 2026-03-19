@@ -70,7 +70,28 @@ Liste problemas claros e objetivos
 Ações práticas do professor
 
 ### Sugestões de Conteúdo IA
-- [Tema identificado] → sugestão de conteúdo diretamente relacionada
+Para cada título de atividade, você DEVE:
+
+1. Identificar o TEMA CENTRAL da atividade
+2. Transformar o título em um conceito educacional
+3. Gerar uma sugestão de conteúdo específica
+
+FORMATO OBRIGATÓRIO:
+
+- [TÍTULO ORIGINAL] → Tema: [tema identificado] → Sugestão: [conteúdo recomendado]
+
+REGRAS:
+- NÃO repetir o título como tema
+- NÃO gerar conteúdo genérico
+- O tema deve ser um conceito (ex: "Equações do 2º grau", "Mudanças climáticas", "Interpretação de texto")
+- A sugestão deve aprofundar o tema
+
+EXEMPLO:
+
+- Fórum: Mudanças climáticas → Tema: Aquecimento global → Sugestão: análise de dados climáticos e estudo de impactos ambientais
+- Atividade: Funções quadráticas → Tema: Equações do 2º grau → Sugestão: resolução de problemas com gráficos interativos
+
+Agora aplique isso aos dados fornecidos.
 
 ### Trilhas de Aprendizagem e MOOCs
 
@@ -85,8 +106,8 @@ Para cada tema:
   Curso MOOC recomendado:
   - Curso real ou compatível com o MOOC do Ifes
 
-⚠️ NÃO gere conteúdo genérico
-⚠️ NÃO invente temas fora dos títulos
+NÃO gere conteúdo genérico
+NÃO invente temas fora dos títulos
 `;
 
     const response = await fetch(
