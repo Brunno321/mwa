@@ -11,11 +11,14 @@ function extrairTexto(json) {
   return json?.candidates?.[0]?.content?.parts?.map(p => p?.text || "").join("\n").trim() || "";
 }
 
+/* ==============================
+   🤖 IA COMPLETA (ANÁLISE + CONTEÚDO + TRILHAS)
+============================== */
 app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
-    // 🔥 NORMALIZAÇÃO ROBUSTA (CORREÇÃO DO ERRO)
+    // 🔥 NORMALIZAÇÃO ROBUSTA
     let lista = dados;
 
     if (Array.isArray(lista) && Array.isArray(lista[0])) {
@@ -26,60 +29,64 @@ app.post("/ia", async (req, res) => {
       lista = Object.values(lista);
     }
 
+    // 🔥 EXTRAIR TÍTULOS DAS ATIVIDADES
     const titulos = lista
       .map(d => d?.contextodoevento || "")
       .filter(Boolean)
-      .slice(0, 15)
+      .slice(0, 20)
       .join(" | ");
 
     const prompt = `
-Você é um professor altamente qualificado e experiente em múltiplas áreas do conhecimento, incluindo:
+Você é um professor altamente qualificado e multidisciplinar, especialista em:
 
-- Ciências Exatas (Matemática, Física, Química)
-- Ciências Humanas (História, Geografia, Sociologia, Filosofia)
-- Linguagens (Português, Literatura, Comunicação)
+- Ciências Exatas
+- Ciências Humanas
+- Linguagens
 - Ciências Biológicas
 - Tecnologia e Educação Digital
+- Educação a Distância (EaD)
+- Learning Analytics
 
-Você também é especialista em Educação a Distância (EaD), metodologias ativas e análise de dados educacionais.
+Você analisa dados do Moodle e gera recomendações pedagógicas inteligentes.
 
-Sua tarefa é analisar dados de um Ambiente Virtual de Aprendizagem (Moodle), incluindo os títulos das atividades acessadas pelos alunos.
-
-⚠️ REGRA IMPORTANTE:
-As sugestões de conteúdo DEVEM ser diretamente relacionadas aos títulos das atividades listadas em "Acesso às atividades".
-NÃO gere sugestões genéricas.
+⚠️ REGRA CRÍTICA:
+As sugestões DEVEM ser baseadas diretamente nos títulos das atividades.
 
 TÍTULOS DAS ATIVIDADES:
-{{TITULOS_AQUI}}
+${titulos}
 
 DADOS:
-{{DADOS_AQUI}}
+${JSON.stringify(dados)}
 
 Responda OBRIGATORIAMENTE neste formato:
 
 ### Diagnóstico
-Resumo do engajamento geral com base nos dados.
+Resumo do engajamento geral da turma
 
 ### Problemas Identificados
-Liste problemas objetivos (ex: baixo acesso, pouca interação, evasão).
+Liste problemas claros e objetivos
 
 ### Recomendações Pedagógicas
-Sugira ações práticas do professor.
+Ações práticas do professor
 
 ### Sugestões de Conteúdo IA
-- Gere sugestões diretamente relacionadas aos temas das atividades
-- Para cada sugestão, deixe claro o vínculo com o conteúdo
+- [Tema identificado] → sugestão de conteúdo diretamente relacionada
 
-Formato das sugestões:
-- [Tema identificado] → sugestão de conteúdo
+### Trilhas de Aprendizagem e MOOCs
 
-Exemplo:
-- Funções matemáticas → exercícios práticos e visualização gráfica
-- Fórum de discussão sobre clima → estudo de caso sobre mudanças climáticas
+Para cada tema:
 
-Se não houver relação clara, NÃO invente conteúdo.
+- Tema: [nome]
+  Trilha:
+  1. Conceito básico
+  2. Aplicação prática
+  3. Atividade ou exercício
 
-${titulos}
+  Curso MOOC recomendado:
+  - Curso real ou compatível com o MOOC do Ifes
+
+⚠️ NÃO gere conteúdo genérico
+⚠️ NÃO invente temas fora dos títulos
 `;
 
     const response = await fetch(
@@ -96,7 +103,13 @@ ${titulos}
     const json = await response.json();
     const texto = extrairTexto(json);
 
-    res.json({ resposta: texto });
+    if (texto) {
+      res.json({ resposta: texto });
+    } else {
+      res.json({
+        resposta: `<pre>${JSON.stringify(json, null, 2)}</pre>`
+      });
+    }
 
   } catch (e) {
     res.json({
@@ -105,7 +118,9 @@ ${titulos}
   }
 });
 
+/* ==============================
+   🚀 START
+============================== */
 app.listen(10000, () => {
-  console.log("Servidor rodando 🚀");
+  console.log("Servidor rodando com IA avançada 🚀");
 });
-
