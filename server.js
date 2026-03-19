@@ -7,25 +7,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔧 FIX: remover optional chaining perigoso
+// 🔧 extrair texto Gemini (sem optional chaining)
 function extrairTexto(json) {
   if (
     json &&
     json.candidates &&
     json.candidates[0] &&
     json.candidates[0].content &&
-    json.candidates[0].content.parts
+    json.candidates[0].content.parts &&
+    json.candidates[0].content.parts[0]
   ) {
-    return json.candidates[0].content.parts
-      .map(p => (p && p.text) ? p.text : "")
-      .join("\n")
-      .trim();
+    return json.candidates[0].content.parts[0].text;
   }
   return "";
 }
 
-// 🔵 DeepSeek extractor (seguro)
-function extrairDeepSeek(json){
+// 🔧 extrair DeepSeek
+function extrairDeepSeek(json) {
   if (
     json &&
     json.choices &&
@@ -38,109 +36,84 @@ function extrairDeepSeek(json){
 }
 
 /* ==============================
-   🤖 IA COMPLETA
+   🤖 IA (VERSÃO ESTÁVEL)
 ============================== */
 app.post("/ia", async (req, res) => {
   try {
-    const dados = req.body.dados || [];
-    let lista = dados;
-
-    if (Array.isArray(lista) && Array.isArray(lista[0])) {
-      lista = lista[0];
-    }
-
-    if (!Array.isArray(lista)) {
-      lista = Object.values(lista);
-    }
-
-    // ✅ FIX: usar títulos vindos do frontend corretamente
-    const titulosArray = req.body.titulos || [];
-
-    if (!titulosArray.length) {
-      return res.json({
-        resposta: "⚠️ Nenhum título de atividade recebido."
-      });
-    }
-
-    const titulos = titulosArray.join(" | ");
+    const dados = req.body;
 
     const prompt = `
-Você é um professor altamente qualificado e multidisciplinar, especialista em:
+Você é um especialista em Educação a Distância (EaD).
 
-- Ciências Exatas
-- Ciências Humanas
-- Linguagens
-- Ciências Biológicas
-- Tecnologia e Educação Digital
-- Educação a Distância (EaD)
-- Learning Analytics
+Analise os dados do Moodle e gere recomendações pedagógicas.
 
-⚠️ REGRA CRÍTICA:
-As sugestões DEVEM ser baseadas diretamente nos títulos das atividades.
+Responda neste formato:
 
-TÍTULOS DAS ATIVIDADES:
-${titulos}
+### Diagnóstico
+Resumo do engajamento
+
+### Problemas Identificados
+Liste problemas
+
+### Recomendações Pedagógicas
+Sugestões do professor
+
+### Sugestões de Conteúdo IA
+Sugira melhorias no conteúdo
+
+### Trilhas de Aprendizagem
+Sugira trilhas de estudo
 
 DADOS:
 ${JSON.stringify(dados)}
-
-Responda OBRIGATORIAMENTE neste formato:
-
-### Diagnóstico
-Resumo do engajamento geral da turma
-
-### Problemas Identificados
-Liste problemas claros e objetivos
-
-### Recomendações Pedagógicas
-Ações práticas do professor
-
-### Sugestões de Conteúdo IA
-- [TÍTULO ORIGINAL] → Tema: [...] → Sugestão: [...]
-
-### Trilhas de Aprendizagem e MOOCs
-- Tema:
-  Trilha:
-  Curso MOOC:
 `;
 
     // ===============================
-    // 🟡 GEMINI
+    // 🟡 TENTA GEMINI
     // ===============================
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        }
+      );
+
+      const json = await response.json();
+      const texto = extrairTexto(json);
+
+      if (texto && !json.error) {
+        return res.json({ resposta: texto });
       }
-    );
 
-    const json = await response.json();
-    const texto = extrairTexto(json);
+      throw new Error("Gemini falhou");
 
-    // ===============================
-    // 🔵 FALLBACK DEEPSEEK
-    // ===============================
-    if (!texto || (json && json.error)) {
-
+    } catch (e) {
       console.log("⚠️ Gemini falhou → usando DeepSeek");
 
-      const responseDeep = await fetch("https://api.deepseek.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: [
-            { role: "user", content: prompt }
-          ]
-        })
-      });
+      // ===============================
+      // 🔵 DEEPSEEK
+      // ===============================
+      const responseDeep = await fetch(
+        "https://api.deepseek.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "deepseek-chat",
+            messages: [
+              { role: "user", content: prompt }
+            ]
+          })
+        }
+      );
 
       const jsonDeep = await responseDeep.json();
       const textoDeep = extrairDeepSeek(jsonDeep);
@@ -150,30 +123,19 @@ Ações práticas do professor
       }
 
       return res.json({
-        resposta: `<pre>${JSON.stringify(jsonDeep, null, 2)}</pre>`
-      });
-    }
-
-    // ===============================
-    // ✔ RESPOSTA NORMAL
-    // ===============================
-    if (texto) {
-      res.json({ resposta: texto });
-    } else {
-      res.json({
-        resposta: `<pre>${JSON.stringify(json, null, 2)}</pre>`
+        resposta: "⚠️ IA indisponível no momento."
       });
     }
 
   } catch (e) {
     res.json({
-      resposta: `<p>❌ Erro servidor: ${e.message}</p>`
+      resposta: "❌ Erro servidor: " + e.message
     });
   }
 });
 
 /* ==============================
-   🚀 START (FIX RENDER)
+   🚀 START (RENDER OK)
 ============================== */
 const PORT = process.env.PORT || 10000;
 
