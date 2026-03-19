@@ -93,7 +93,7 @@ EXEMPLO:
 
 Agora aplique isso aos dados fornecidos.
 
-### Trilhas de Aprendizagem e MOOCs
+### Trilhas de Aprendizagem 
 
 Para cada tema:
 
