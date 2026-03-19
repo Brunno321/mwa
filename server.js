@@ -21,17 +21,31 @@ app.post("/ia", async (req, res) => {
         model: "gpt-4o-mini",
         messages: [{
           role: "user",
-          content: `Analise e gere recomendações pedagógicas: ${JSON.stringify(dados)}`
+          content: `Analise os dados educacionais e gere recomendações pedagógicas:\n${JSON.stringify(dados)}`
         }]
       })
     });
 
     const json = await response.json();
-    res.json({resposta: json.choices[0].message.content});
+
+    console.log("Resposta OpenAI:", json); // 👈 DEBUG
+
+    // ✅ TRATAMENTO SEGURO
+    if (json && json.choices && json.choices[0]) {
+      res.json({
+        resposta: json.choices[0].message.content
+      });
+    } else {
+      res.json({
+        resposta: `<p>⚠️ IA não retornou resposta válida.</p><pre>${JSON.stringify(json, null, 2)}</pre>`
+      });
+    }
 
   } catch (e) {
-    res.status(500).json({erro:e.message});
+    res.json({
+      resposta: `<p>❌ Erro no servidor IA: ${e.message}</p>`
+    });
   }
 });
 
-app.listen(10000, ()=>console.log("rodando"));
+app.listen(10000, () => console.log("Servidor rodando"));
