@@ -43,26 +43,77 @@ app.post("/ia", async (req, res) => {
     const dados = req.body;
 
     const prompt = `
-Você é um especialista em Educação a Distância (EaD).
+Você é um professor altamente qualificado e multidisciplinar, especialista em:
 
-Analise os dados do Moodle e gere recomendações pedagógicas.
+- Ciências Exatas
+- Ciências Humanas
+- Linguagens
+- Ciências Biológicas
+- Tecnologia e Educação Digital
+- Educação a Distância (EaD)
+- Learning Analytics
 
-Responda neste formato:
+Você analisa dados do Moodle e gera recomendações pedagógicas inteligentes.
+
+⚠️ REGRA CRÍTICA:
+As sugestões DEVEM ser baseadas diretamente nos títulos das atividades.
+
+TÍTULOS DAS ATIVIDADES:
+${titulos}
+
+DADOS:
+${JSON.stringify(dados)}
+
+Responda OBRIGATORIAMENTE neste formato:
 
 ### Diagnóstico
-Resumo do engajamento
+Resumo do engajamento geral da turma
 
 ### Problemas Identificados
-Liste problemas
+Liste problemas claros e objetivos
 
 ### Recomendações Pedagógicas
-Sugestões do professor
+Ações práticas do professor
 
 ### Sugestões de Conteúdo IA
-Sugira melhorias no conteúdo
+Para cada título de atividade, você DEVE:
 
-### Trilhas de Aprendizagem
-Sugira trilhas de estudo
+1. Identificar o TEMA CENTRAL da atividade
+2. Transformar o título em um conceito educacional
+3. Gerar uma sugestão de conteúdo específica
+
+FORMATO OBRIGATÓRIO:
+
+- [TÍTULO ORIGINAL] → Tema: [tema identificado] → Sugestão: [conteúdo recomendado]
+
+REGRAS:
+- NÃO repetir o título como tema
+- NÃO gerar conteúdo genérico
+- O tema deve ser um conceito (ex: "Equações do 2º grau", "Mudanças climáticas", "Interpretação de texto")
+- A sugestão deve aprofundar o tema
+
+EXEMPLO:
+
+- Fórum: Mudanças climáticas → Tema: Aquecimento global → Sugestão: análise de dados climáticos e estudo de impactos ambientais
+- Atividade: Funções quadráticas → Tema: Equações do 2º grau → Sugestão: resolução de problemas com gráficos interativos
+
+Agora aplique isso aos dados fornecidos.
+
+### Trilhas de Aprendizagem e MOOCs
+
+Para cada tema:
+
+- Tema: [nome]
+  Trilha:
+  1. Conceito básico
+  2. Aplicação prática
+  3. Atividade ou exercício
+
+  Curso MOOC recomendado:
+  - Curso real ou compatível com o MOOC do Ifes
+
+NÃO gere conteúdo genérico
+NÃO invente temas fora dos títulos
 
 DADOS:
 ${JSON.stringify(dados)}
