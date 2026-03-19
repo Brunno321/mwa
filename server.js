@@ -33,7 +33,7 @@ app.post("/ia", async (req, res) => {
       lista = Object.values(lista);
     }
 
-    const titulos = lista
+    const titulos = req.body.titulos || [];
       .map(d => d?.contextodoevento || "")
       .filter(Boolean)
       .slice(0, 20)
