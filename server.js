@@ -11,46 +11,45 @@ function extrairTexto(json) {
   return json?.candidates?.[0]?.content?.parts?.map(p => p?.text || "").join("\n").trim() || "";
 }
 
-/* ==============================
-   🤖 IA PRINCIPAL (COM CONTEÚDO REAL)
-============================== */
 app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
-    // 🔥 extrair títulos das atividades
-    const titulos = (dados || [])
-      .map(d => d.contextodoevento)
+    // 🔥 NORMALIZAÇÃO ROBUSTA (CORREÇÃO DO ERRO)
+    let lista = dados;
+
+    if (Array.isArray(lista) && Array.isArray(lista[0])) {
+      lista = lista[0];
+    }
+
+    if (!Array.isArray(lista)) {
+      lista = Object.values(lista);
+    }
+
+    const titulos = lista
+      .map(d => d?.contextodoevento || "")
       .filter(Boolean)
       .slice(0, 15)
       .join(" | ");
 
     const prompt = `
-Você é um especialista em Educação a Distância (EaD), design instrucional e professor de todas as disciplinas existentes.
+Você é especialista em Educação a Distância.
 
-Analise os dados do Moodle e os títulos das atividades para gerar recomendações pedagógicas e de conteúdo.
-
-TÍTULOS DAS ATIVIDADES:
-${titulos}
-
-DADOS:
-${JSON.stringify(dados)}
-
-⚠️ Responda EXATAMENTE neste formato:
+Analise os dados e gere:
 
 ### Diagnóstico
-Resumo do engajamento da turma (máx 5 linhas)
+Resumo do engajamento
 
 ### Problemas Identificados
-- Liste problemas claros
+Liste problemas
 
 ### Recomendações Pedagógicas
-- Ações práticas do professor
+Ações do professor
 
 ### Sugestões de Conteúdo IA
-- Gere conteúdos diretamente relacionados aos temas das atividades
-- Ex: conceitos, teorias, práticas, materiais complementares
-- Seja específico e contextual
+Sugira conteúdos com base nos temas:
+
+${titulos}
 `;
 
     const response = await fetch(
@@ -76,9 +75,7 @@ Resumo do engajamento da turma (máx 5 linhas)
   }
 });
 
-/* ==============================
-   🚀 START
-============================== */
 app.listen(10000, () => {
   console.log("Servidor rodando 🚀");
 });
+
