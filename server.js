@@ -58,12 +58,6 @@ Você analisa dados do Moodle e gera recomendações pedagógicas inteligentes.
 ⚠️ REGRA CRÍTICA:
 As sugestões DEVEM ser baseadas diretamente nos títulos das atividades.
 
-TÍTULOS DAS ATIVIDADES:
-${titulos}
-
-DADOS:
-${JSON.stringify(dados)}
-
 Responda OBRIGATORIAMENTE neste formato:
 
 ### Diagnóstico
