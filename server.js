@@ -12,10 +12,29 @@ app.post("/ia", async (req, res) => {
     const dados = req.body;
 
     const prompt = `
-Você é um especialista em educação a distância.
+Você é um especialista em Educação a Distância (EaD) e design instrucional e ainda professor do conteúdo das atividades.
 
-Analise os dados e gere recomendações pedagógicas:
+Analise os dados do AVA (Moodle) e gere recomendações pedagógicas.
 
+⚠️ Responda OBRIGATORIAMENTE neste formato:
+
+### Diagnóstico
+Resumo geral do engajamento da turma (máx 5 linhas)
+
+### Problemas Identificados
+- Liste problemas de forma objetiva
+- Ex: baixo acesso, pouca participação, evasão, etc.
+
+### Recomendações Pedagógicas
+- Ações do professor (mediação, feedback, etc.)
+
+### Recomendações de Conteúdo
+- Sugira melhorias no conteúdo didático
+- Ex: adicionar vídeo, simplificar instruções, usar H5P, reorganizar página
+- Relacione com os problemas encontrados
+- Indicar outros conteúdos relacionados as atividades e conteúdos trabalhados.
+
+Dados:
 ${JSON.stringify(dados)}
 `;
 
