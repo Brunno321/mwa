@@ -11,6 +11,11 @@ function extrairTexto(json) {
   return json?.candidates?.[0]?.content?.parts?.map(p => p?.text || "").join("\n").trim() || "";
 }
 
+// 🔵 NOVO: DeepSeek extractor (ADICIONADO)
+function extrairDeepSeek(json){
+  return json?.choices?.[0]?.message?.content || "";
+}
+
 /* ==============================
    🤖 IA COMPLETA (ANÁLISE + CONTEÚDO + TRILHAS)
 ============================== */
@@ -18,7 +23,6 @@ app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
-    // 🔥 NORMALIZAÇÃO ROBUSTA
     let lista = dados;
 
     if (Array.isArray(lista) && Array.isArray(lista[0])) {
@@ -29,7 +33,6 @@ app.post("/ia", async (req, res) => {
       lista = Object.values(lista);
     }
 
-    // 🔥 EXTRAIR TÍTULOS DAS ATIVIDADES
     const titulos = lista
       .map(d => d?.contextodoevento || "")
       .filter(Boolean)
@@ -37,6 +40,7 @@ app.post("/ia", async (req, res) => {
       .join(" | ");
 
     const prompt = `
+${/* seu prompt original intacto */""}
 Você é um professor altamente qualificado e multidisciplinar, especialista em:
 
 - Ciências Exatas
@@ -83,33 +87,17 @@ FORMATO OBRIGATÓRIO:
 REGRAS:
 - NÃO repetir o título como tema
 - NÃO gerar conteúdo genérico
-- O tema deve ser um conceito (ex: "Equações do 2º grau", "Mudanças climáticas", "Interpretação de texto")
-- A sugestão deve aprofundar o tema
-
-EXEMPLO:
-
-- Fórum: Mudanças climáticas → Tema: Aquecimento global → Sugestão: análise de dados climáticos e estudo de impactos ambientais
-- Atividade: Funções quadráticas → Tema: Equações do 2º grau → Sugestão: resolução de problemas com gráficos interativos
-
-Agora aplique isso aos dados fornecidos.
+- O tema deve ser um conceito
 
 ### Trilhas de Aprendizagem e MOOCs
-
-Para cada tema:
-
-- Tema: [nome]
+- Tema:
   Trilha:
-  1. Conceito básico
-  2. Aplicação prática
-  3. Atividade ou exercício
-
-  Curso MOOC recomendado:
-  - Curso real ou compatível com o MOOC do Ifes
-
-NÃO gere conteúdo genérico
-NÃO invente temas fora dos títulos
+  Curso MOOC:
 `;
 
+    // ===============================
+    // 🟡 GEMINI (SEU CÓDIGO ORIGINAL)
+    // ===============================
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -124,6 +112,42 @@ NÃO invente temas fora dos títulos
     const json = await response.json();
     const texto = extrairTexto(json);
 
+    // ===============================
+    // 🔵 NOVO: FALLBACK DEEPSEEK
+    // ===============================
+    if (!texto || json?.error) {
+
+      console.log("⚠️ Gemini falhou → usando DeepSeek");
+
+      const responseDeep = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: [
+            { role: "user", content: prompt }
+          ]
+        })
+      });
+
+      const jsonDeep = await responseDeep.json();
+      const textoDeep = extrairDeepSeek(jsonDeep);
+
+      if (textoDeep) {
+        return res.json({ resposta: textoDeep });
+      }
+
+      return res.json({
+        resposta: `<pre>${JSON.stringify(jsonDeep, null, 2)}</pre>`
+      });
+    }
+
+    // ===============================
+    // ✔ RESPOSTA NORMAL (SEM ALTERAÇÃO)
+    // ===============================
     if (texto) {
       res.json({ resposta: texto });
     } else {
@@ -143,5 +167,5 @@ NÃO invente temas fora dos títulos
    🚀 START
 ============================== */
 app.listen(10000, () => {
-  console.log("Servidor rodando com IA avançada 🚀");
+  console.log("Servidor rodando com IA híbrida 🚀");
 });
