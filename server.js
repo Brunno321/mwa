@@ -34,7 +34,7 @@ app.post("/ia", async (req, res) => {
     }
 
     const titulos = req.body.titulos || [];
-      .map(d => d?.contextodoevento || "")
+      .map(d => (d && d.contextodoevento) ? d.contextodoevento : "")
       .filter(Boolean)
       .slice(0, 20)
       .join(" | ");
