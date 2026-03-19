@@ -33,7 +33,13 @@ app.post("/ia", async (req, res) => {
       .join(" | ");
 
     const prompt = `
-Você é especialista em Educação a Distância.
+Você é um professor altamente qualificado e experiente em múltiplas áreas do conhecimento, incluindo:
+
+- Ciências Exatas (Matemática, Física, Química)
+- Ciências Humanas (História, Geografia, Sociologia, Filosofia)
+- Linguagens (Português, Literatura, Comunicação)
+- Ciências Biológicas
+- Tecnologia e Educação Digital
 
 Analise os dados e gere:
 
