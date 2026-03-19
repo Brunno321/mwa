@@ -7,22 +7,42 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 🔧 FIX: remover optional chaining perigoso
 function extrairTexto(json) {
-  return json?.candidates?.[0]?.content?.parts?.map(p => p?.text || "").join("\n").trim() || "";
+  if (
+    json &&
+    json.candidates &&
+    json.candidates[0] &&
+    json.candidates[0].content &&
+    json.candidates[0].content.parts
+  ) {
+    return json.candidates[0].content.parts
+      .map(p => (p && p.text) ? p.text : "")
+      .join("\n")
+      .trim();
+  }
+  return "";
 }
 
-// 🔵 NOVO: DeepSeek extractor (ADICIONADO)
+// 🔵 DeepSeek extractor (seguro)
 function extrairDeepSeek(json){
-  return json?.choices?.[0]?.message?.content || "";
+  if (
+    json &&
+    json.choices &&
+    json.choices[0] &&
+    json.choices[0].message
+  ) {
+    return json.choices[0].message.content || "";
+  }
+  return "";
 }
 
 /* ==============================
-   🤖 IA COMPLETA (ANÁLISE + CONTEÚDO + TRILHAS)
+   🤖 IA COMPLETA
 ============================== */
 app.post("/ia", async (req, res) => {
   try {
-    const dados = req.body;
-
+    const dados = req.body.dados || [];
     let lista = dados;
 
     if (Array.isArray(lista) && Array.isArray(lista[0])) {
@@ -33,14 +53,18 @@ app.post("/ia", async (req, res) => {
       lista = Object.values(lista);
     }
 
-    const titulos = req.body.titulos || [];
-      .map(d => (d && d.contextodoevento) ? d.contextodoevento : "")
-      .filter(Boolean)
-      .slice(0, 20)
-      .join(" | ");
+    // ✅ FIX: usar títulos vindos do frontend corretamente
+    const titulosArray = req.body.titulos || [];
+
+    if (!titulosArray.length) {
+      return res.json({
+        resposta: "⚠️ Nenhum título de atividade recebido."
+      });
+    }
+
+    const titulos = titulosArray.join(" | ");
 
     const prompt = `
-${/* seu prompt original intacto */""}
 Você é um professor altamente qualificado e multidisciplinar, especialista em:
 
 - Ciências Exatas
@@ -50,8 +74,6 @@ Você é um professor altamente qualificado e multidisciplinar, especialista em:
 - Tecnologia e Educação Digital
 - Educação a Distância (EaD)
 - Learning Analytics
-
-Você analisa dados do Moodle e gera recomendações pedagógicas inteligentes.
 
 ⚠️ REGRA CRÍTICA:
 As sugestões DEVEM ser baseadas diretamente nos títulos das atividades.
@@ -74,20 +96,7 @@ Liste problemas claros e objetivos
 Ações práticas do professor
 
 ### Sugestões de Conteúdo IA
-Para cada título de atividade, você DEVE:
-
-1. Identificar o TEMA CENTRAL da atividade
-2. Transformar o título em um conceito educacional
-3. Gerar uma sugestão de conteúdo específica
-
-FORMATO OBRIGATÓRIO:
-
-- [TÍTULO ORIGINAL] → Tema: [tema identificado] → Sugestão: [conteúdo recomendado]
-
-REGRAS:
-- NÃO repetir o título como tema
-- NÃO gerar conteúdo genérico
-- O tema deve ser um conceito
+- [TÍTULO ORIGINAL] → Tema: [...] → Sugestão: [...]
 
 ### Trilhas de Aprendizagem e MOOCs
 - Tema:
@@ -96,7 +105,7 @@ REGRAS:
 `;
 
     // ===============================
-    // 🟡 GEMINI (SEU CÓDIGO ORIGINAL)
+    // 🟡 GEMINI
     // ===============================
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -113,9 +122,9 @@ REGRAS:
     const texto = extrairTexto(json);
 
     // ===============================
-    // 🔵 NOVO: FALLBACK DEEPSEEK
+    // 🔵 FALLBACK DEEPSEEK
     // ===============================
-    if (!texto || json?.error) {
+    if (!texto || (json && json.error)) {
 
       console.log("⚠️ Gemini falhou → usando DeepSeek");
 
@@ -146,7 +155,7 @@ REGRAS:
     }
 
     // ===============================
-    // ✔ RESPOSTA NORMAL (SEM ALTERAÇÃO)
+    // ✔ RESPOSTA NORMAL
     // ===============================
     if (texto) {
       res.json({ resposta: texto });
@@ -164,8 +173,10 @@ REGRAS:
 });
 
 /* ==============================
-   🚀 START
+   🚀 START (FIX RENDER)
 ============================== */
-app.listen(10000, () => {
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, () => {
   console.log("Servidor rodando com IA híbrida 🚀");
 });
