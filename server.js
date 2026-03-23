@@ -72,13 +72,9 @@ Ações práticas do professor
 ### Sugestões de Conteúdo IA
 Para cada título de atividade, você DEVE:
 
-1. Identificar o TEMA CENTRAL da atividade
+1. Identificar o título do contexto do evento do arquivo .json
 2. Transformar o título em um conceito educacional
 3. Gerar uma sugestão de conteúdo específica
-
-FORMATO OBRIGATÓRIO:
-
-- [TÍTULO ORIGINAL] → Tema: [tema identificado] → Sugestão: [conteúdo recomendado]
 
 REGRAS:
 - NÃO repetir o título como tema
