@@ -150,6 +150,13 @@ Para cada tema:
 - Gerar conteúdo genérico
 - Inventar temas fora dos títulos
 - Ignorar os dados fornecidos
+
+FORMATAÇÃO OBRIGATÓRIA:
+- Usar títulos (###)
+- Usar listas com marcadores (-)
+- Cada recomendação deve ser separada
+- NÃO escrever em parágrafo único
+- NÃO usar texto corrido
 DADOS:
 ${JSON.stringify(dados)}
 `;
