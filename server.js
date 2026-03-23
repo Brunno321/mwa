@@ -107,7 +107,7 @@ Sugira ações práticas e aplicáveis no Moodle:
 
 Para cada título de atividade:
 
-1. Identifique o título no campo "contexto"
+1. Identifique o título no campo "contexto do evento"
 2. Extraia o conceito educacional central
 3. Classifique o nível (básico, intermediário ou avançado)
 4. Gere uma sugestão de conteúdo aprofundada
