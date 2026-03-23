@@ -103,31 +103,7 @@ Sugira ações práticas e aplicáveis no Moodle:
 
 ---
 
-### Sugestões de Conteúdo IA
-
-Para cada título de atividade:
-
-1. Identifique o título no campo "contexto do evento"
-2. Extraia o conceito educacional central
-3. Classifique o nível (básico, intermediário ou avançado)
-4. Gere uma sugestão de conteúdo aprofundada
-
-REGRAS:
-- NÃO repetir o título como tema
-- NÃO gerar conteúdo genérico
-- O tema deve ser conceitual
-- A sugestão deve incluir estratégia pedagógica
-
-Formato:
-
-- Atividade: [título original]
-  Tema: [conceito]
-  Nível: [básico/intermediário/avançado]
-  Sugestão: [conteúdo aprofundado + estratégia]
-
----
-
-### Trilhas de Aprendizagem
+### Sugestão de Conteúdo
 
 Para cada tema:
 
