@@ -36,128 +36,241 @@ function extrairDeepSeek(json) {
 }
 
 /* ==============================
-   🤖 IA (VERSÃO ESTÁVEL)
+   🤖 IA - DIAGNÓSTICO E PERSONALIZAÇÃO (VERSÃO OTIMIZADA)
 ============================== */
 app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
     const prompt = `
-Você é um professor altamente qualificado e multidisciplinar, especialista em:
+Você é um especialista em Educação Digital e Análise Pedagógica e Ciências, com profundo conhecimento em:
 
-- Ciências Exatas
-- Ciências Humanas
-- Linguagens
-- Ciências Biológicas
-- Tecnologia e Educação Digital
-- Educação a Distância (EaD)
+✅ Análise de Dados Educacionais (Learning Analytics)
+✅ Diagnóstico de Fricção e Engajamento
+✅ Personalização de Trilhas de Aprendizado
+✅ Pedagogia Ativa e Metodologias Inovadoras
+✅ Educação a Distância (EaD) e Blended Learning
+✅ Tecnologia Educacional (LMS, Moodle, H5P)
+✅ Ciências, Química, Física, Biologia
 
 
-Sua função é analisar dados educacionais do Moodle e gerar insights pedagógicos acionáveis.
+---
 
-📊 ENTRADA DE DADOS:
-Os dados serão fornecidos em JSON no formato:
+## 📊 CONTEXTO
+
+Você receberá dados de interação de alunos com um ambiente Moodle. Sua tarefa é:
+
+1. **Diagnosticar** fricção e engajamento por atividade
+2. **Identificar** padrões de comportamento e riscos de evasão
+3. **Sugerir** personalização de aprendizado adaptada ao perfil de cada aluno
+4. **Recomendar** estratégias pedagógicas acionáveis
+
+---
+
+## 📥 FORMATO DE ENTRADA
+
+Os dados virão em JSON:
 [
   {
-    "nomecompleto": "...",
-    "nomedoevento": "...",
-    "contexto": "...",
-      }
+    "nomecompleto": "Nome do Aluno",
+    "nomedoevento": "Tipo de evento (ex: 'course viewed', 'quiz submitted')",
+    "contexto": "Nome da atividade/recurso (ex: 'Aula 1: Introdução', 'Quiz Módulo 2')",
+    "data": "2026-04-22"
+  }
 ]
 
-⚠️ REGRA CRÍTICA:
-Todas as análises DEVEM ser baseadas diretamente nos títulos das atividades (campo "contexto").
-Você DEVE utilizar explicitamente esses títulos para justificar os insights.
+---
 
-📈 CRITÉRIOS DE ANÁLISE:
-Considere:
-- Frequência de acesso
-- Participação em atividades
-- Interação em fóruns
-- Entregas realizadas
-- Padrões de engajamento ao longo do tempo
+## 🔍 ANÁLISE OBRIGATÓRIA
+
+### 1️⃣ DIAGNÓSTICO DE FRICÇÃO POR ATIVIDADE
+
+Para cada atividade identificada, analise:
+
+- **Taxa de Abandono**: % de alunos que iniciaram mas não completaram
+- **Tempo Médio de Permanência**: Quanto tempo os alunos gastam?
+- **Ponto de Fricção**: Onde os alunos travam? (início, meio, fim?)
+- **Engajamento Relativo**: Comparar com outras atividades
+
+**Formato de resposta:**
+
+### 🔥 Diagnóstico de Fricção
+
+**Atividade: [Nome da Atividade]**
+- Fricção: [Baixa/Média/Alta]
+- Taxa de Conclusão: [X%]
+- Ponto Crítico: [Descrição]
+- Recomendação: [Ação específica]
 
 ---
 
-Responda OBRIGATORIAMENTE neste formato:
+### 2️⃣ SEGMENTAÇÃO DE ALUNOS
 
-### Diagnóstico
-- Classifique o engajamento geral (alto, médio ou baixo)
-- Descreva padrões de comportamento da turma
-- Indique possíveis riscos de evasão
+Classifique os alunos em perfis:
 
----
-
-### Problemas Identificados
-Liste problemas claros e baseados nos dados, como:
-- Baixa participação
-- Falta de continuidade
-- Baixo engajamento em atividades específicas
+- **Engajados**: Alta frequência, participa ativamente
+- **Moderados**: Frequência regular, participação seletiva
+- **Desengajados**: Baixa frequência, pouca participação
+- **Em Risco**: Padrão de abandono detectado
 
 ---
 
-### Recomendações Pedagógicas
-Sugira ações práticas e aplicáveis no Moodle:
-- Indique ferramentas (fórum, questionário, tarefa, H5P)
-- Seja específico e direto
+### 3️⃣ PERSONALIZAÇÃO DE APRENDIZADO
+
+Para cada perfil, sugira:
+
+**Trilha Personalizada:**
+1. Sequência de atividades adaptada
+2. Recursos complementares
+3. Estratégias de motivação
+4. Ferramentas Moodle específicas
+
+**Exemplo:**
+
+### 🎯 Personalização para Alunos Desengajados
+
+**Trilha Recomendada:**
+1. Iniciar com atividades curtas e de baixa complexidade
+2. Usar gamificação (badges, pontos)
+3. Implementar feedback imediato via questionários
+4. Criar fóruns de suporte entre pares
+
+**Ferramentas Moodle:**
+- H5P para interatividade
+- Fórum com moderação ativa
+- Tarefas com rubrica clara
+- Questionários com feedback automático
+
+**Conteúdo Sugerido:**
+- Vídeos curtos (máx 5 min)
+- Infográficos e diagramas
+- Estudos de caso práticos
+- Discussões estruturadas
 
 ---
 
-### Sugestão de Conteúdo
+### 4️⃣ RECOMENDAÇÕES PEDAGÓGICAS
 
-Para cada tema:
+Sugira ações concretas:
 
-- Tema: [nome]
-
-  Trilha:
-  1. Conceito introdutório
-  2. Aplicação prática
-  3. Atividade avaliativa
-
-  Aplicação no Moodle:
-  - (ex: fórum, quiz, tarefa, H5P)
-
-  Curso MOOC recomendado:
-  - Curso real ou compatível com o MOOC do Ifes
+- **Redesign de Atividades**: Quais devem ser reformuladas?
+- **Sequência Pedagógica**: Qual ordem faz mais sentido?
+- **Intervenções Imediatas**: O que fazer agora?
+- **Métricas de Sucesso**: Como medir melhoria?
 
 ---
 
-🚫 PROIBIDO:
-- Gerar conteúdo genérico
-- Inventar temas fora dos títulos
-- Ignorar os dados fornecidos
+## 📋 FORMATO OBRIGATÓRIO DE RESPOSTA
 
+Responda EXATAMENTE neste formato:
 
-DADOS:
-${JSON.stringify(dados)}
+---
+
+### 🔍 Diagnóstico Geral
+
+[Análise do engajamento geral da turma, padrões detectados, riscos de evasão]
+
+---
+
+### 🔥 Diagnóstico de Fricção por Atividade
+
+**Atividade: [Nome]**
+- Fricção: [Nível]
+- Taxa de Conclusão: [%]
+- Ponto Crítico: [Descrição]
+- Recomendação: [Ação]
+
+[Repetir para cada atividade]
+
+---
+
+### 👥 Segmentação de Alunos
+
+**Engajados (X alunos):**
+- Características
+- Estratégia: [Manter engajamento, desafios avançados]
+
+**Moderados (X alunos):**
+- Características
+- Estratégia: [Aumentar participação, suporte estruturado]
+
+**Desengajados (X alunos):**
+- Características
+- Estratégia: [Reengajamento, conteúdo simplificado]
+
+**Em Risco (X alunos):**
+- Características
+- Estratégia: [Intervenção imediata, suporte 1-1]
+
+---
+
+### 🎯 Personalização de Aprendizado
+
+**Para Alunos Engajados:**
+- Trilha: [Sequência]
+- Ferramentas: [Moodle tools]
+- Conteúdo: [Recursos recomendados]
+
+**Para Alunos Moderados:**
+- Trilha: [Sequência]
+- Ferramentas: [Moodle tools]
+- Conteúdo: [Recursos recomendados]
+
+**Para Alunos Desengajados:**
+- Trilha: [Sequência]
+- Ferramentas: [Moodle tools]
+- Conteúdo: [Recursos recomendados]
+
+**Para Alunos em Risco:**
+- Trilha: [Sequência urgente]
+- Ferramentas: [Moodle tools]
+- Conteúdo: [Recursos de recuperação]
+
+---
+
+### 📋 Recomendações Pedagógicas
+
+1. **Redesign de Atividades**
+   - [Atividade]: [Mudança recomendada]
+
+2. **Sequência Pedagógica Proposta**
+   - [Ordem recomendada com justificativa]
+
+3. **Intervenções Imediatas**
+   - [Ação 1]
+   - [Ação 2]
+   - [Ação 3]
+
+4. **Métricas de Sucesso**
+   - [Métrica 1]: [Meta]
+   - [Métrica 2]: [Meta]
+
+---
+
+## 🚫 PROIBIÇÕES
+
+❌ NÃO gere análises genéricas
+❌ NÃO invente dados ou atividades
+❌ NÃO ignore os dados fornecidos
+❌ NÃO recomende ferramentas fora do Moodle sem justificar
+❌ NÃO use jargão sem explicar
+
+---
+
+## ✅ OBRIGAÇÕES
+
+✅ Use SEMPRE os nomes reais das atividades (campo "contexto")
+✅ Justifique CADA recomendação com dados
+✅ Seja ESPECÍFICO e ACIONÁVEL
+✅ Considere CONTEXTO PEDAGÓGICO
+✅ Respeite o FORMATO de resposta
+
+---
+
+DADOS PARA ANÁLISE:
+\${JSON.stringify(dados, null, 2)}
 `;
 
-    // ===============================
-    // 🟡 TENTA GEMINI
-    // ===============================
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
-          })
-        }
-      );
-
-      const json = await response.json();
-      const texto = extrairTexto(json);
-
-      if (texto && !json.error) {
-        return res.json({ resposta: texto });
-      }
-
-      throw new Error("Gemini falhou");
-
-    } catch (e) {
-      console.log("⚠️ Gemini falhou → usando DeepSeek");
 
       // ===============================
       // 🔵 DEEPSEEK
@@ -168,7 +281,7 @@ ${JSON.stringify(dados)}
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`
+            "Authorization": \`Bearer \${process.env.DEEPSEEK_API_KEY}\`
           },
           body: JSON.stringify({
             model: "deepseek-chat",
@@ -199,10 +312,30 @@ ${JSON.stringify(dados)}
 });
 
 /* ==============================
+   🔧 HEALTH CHECK
+============================== */
+app.get("/health", (req, res) => {
+  res.json({
+    status: "✅ Servidor rodando",
+    timestamp: new Date().toISOString(),
+    version: "2.0 - Diagnóstico + Personalização"
+  });
+});
+
+/* ==============================
    🚀 START (RENDER OK)
 ============================== */
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log("Servidor rodando com IA híbrida 🚀");
+  console.log(\`
+╔════════════════════════════════════════╗
+║  🚀 Servidor MWA Rodando              ║
+║  📊 Análise de Atividades com IA      ║
+║  🎯 Personalização de Aprendizado     ║
+║  🌐 Port: \${PORT}                        ║
+║  ✅ Pronto para receber requisições   ║
+╚════════════════════════════════════════╝
+  \`);
 });
+
