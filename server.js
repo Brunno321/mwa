@@ -1,101 +1,14 @@
 
-
-Lite
-✅ Arquivo server.js Corrigido!
-🔧 O que foi corrigido:
-✅ Template strings escapadas corretamente
-✅ Sintaxe JavaScript válida
-✅ Sem caracteres especiais problemáticos
-✅ Pronto para deploy no Render
-📋 Como usar:
-Substitua o arquivo server.js no seu GitHub pelo arquivo anexado
-Faça commit e push:
-Bash
-git add server.js
-git commit -m "fix: corrigir sintaxe e upgrade para IA v2.0"
-git push
-O Render vai fazer redeploy automaticamente
-Teste o health check:
-Bash
-curl https://mwa-6exk.onrender.com/health
-✨ Agora deve funcionar perfeitamente! 🚀
-server-corrigido.js
-Código · 7.60 KB
-Ver todos os arquivos nesta tarefa
-Como foi este resultado?
-o render voltou a funcionar agora o item diagnostico de atividades com IA ta dando erro Erro ao conectar com a IA: Erro na resposta da IA
-Lite
-Vou investigar o erro. Deixa eu verificar se a API está respondendo corretamente e debugar o problema.
-Verifiquei a resposta da API, ainda preciso debugar para entender o erro. A próxima etapa é identificar a causa do problema na integração.
-
-Lite
-A API está demorando muito para responder. O problema é que:
-Gemini/DeepSeek estão lentos ou sem resposta
-As chaves de API podem estar inválidas ou sem créditos
-A requisição está travando esperando resposta
-Vou criar uma versão melhorada do server.js com:
-✅ Timeout para não travar
-✅ Melhor tratamento de erros
-✅ Logs detalhados
-✅ Fallback com resposta mock para testes
-✅ Suporte a múltiplas tentativas
-Lite
-✅ Arquivo server.js com Debug e Fallback Criado!
-🔧 Melhorias Implementadas:
-✅ Timeout de 25 segundos - Evita travamentos
-✅ Melhor tratamento de erros - Logs detalhados no Render
-✅ Fallback com resposta mock - Se Gemini/DeepSeek falharem, retorna análise simulada
-✅ Endpoint /health - Mostra status das chaves de API
-✅ Endpoint /debug - Para diagnosticar problemas
-✅ Logs informativos - Rastreia cada etapa
-📋 Como usar:
-Substitua seu server.js no GitHub pelo arquivo anexado
-Faça commit e push:
-Bash
-git add server.js
-git commit -m "fix: adicionar timeout, debug e fallback mock"
-git push
-Teste o health check:
-Bash
-curl https://mwa-6exk.onrender.com/health
-Verifique os logs do Render para ver o que está acontecendo
-🎯 Próximas Ações:
-Verifique as chaves de API:
-GEMINI_API_KEY está válida?
-DEEPSEEK_API_KEY está válida?
-Têm créditos disponíveis?
-Se as chaves forem inválidas:
-Atualize as variáveis de ambiente no Render
-Redeploy a aplicação
-Enquanto isso:
-O fallback mock vai funcionar para testes
-Você conseguirá ver a estrutura da análise funcionando
-✨ Agora deve funcionar! 🚀
-server-debug.js
-Código · 10.91 KB
-Ver todos os arquivos nesta tarefa
-Após detectar lentidão na API, implementei timeout, tratamento de erros, logs detalhados e fallback com resposta mock. Próximos passos: verificar chaves de API e créditos.
-
-Tarefa concluída
-Como foi este resultado?
-Sugestões de acompanhamento
-
-
-
-
-Compartilhar
-Publicado
-/
-Editar
-
-server-debug.js
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
 
 const app = express();
+
+// 🔧 Aumentar limite de tamanho de requisição
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 🔧 extrair texto Gemini (sem optional chaining)
 function extrairTexto(json) {
@@ -220,7 +133,7 @@ A turma apresenta engajamento moderado com ${totalAlunos} alunos interagindo com
 }
 
 /* ==============================
-   🤖 IA - DIAGNÓSTICO E PERSONALIZAÇÃO (VERSÃO COM DEBUG)
+   🤖 IA - DIAGNÓSTICO E PERSONALIZAÇÃO (VERSÃO FINAL)
 ============================== */
 app.post("/ia", async (req, res) => {
   try {
@@ -421,7 +334,7 @@ app.get("/health", (req, res) => {
   res.json({
     status: "✅ Servidor rodando",
     timestamp: new Date().toISOString(),
-    version: "2.1 - Diagnóstico + Personalização + Debug",
+    version: "2.2 - Diagnóstico + Personalização + 50MB Limit",
     gemini_key: process.env.GEMINI_API_KEY ? "✅ Configurada" : "❌ Não configurada",
     deepseek_key: process.env.DEEPSEEK_API_KEY ? "✅ Configurada" : "❌ Não configurada"
   });
@@ -434,7 +347,8 @@ app.get("/debug", (req, res) => {
   res.json({
     message: "Verifique os logs do Render para detalhes",
     health_check: "GET /health",
-    test_ia: "POST /ia com dados JSON"
+    test_ia: "POST /ia com dados JSON",
+    max_request_size: "50MB"
   });
 });
 
@@ -450,9 +364,8 @@ app.listen(PORT, () => {
 ║  📊 Análise de Atividades com IA      ║
 ║  🎯 Personalização de Aprendizado     ║
 ║  🌐 Port: ${PORT}                        ║
+║  💾 Limite: 50MB por requisição       ║
 ║  ✅ Pronto para receber requisições   ║
-║  🔧 Debug habilitado                  ║
 ╚════════════════════════════════════════╝
   `);
 });
-Image Content Analysis Request - Manus
