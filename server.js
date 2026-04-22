@@ -42,8 +42,7 @@ app.post("/ia", async (req, res) => {
   try {
     const dados = req.body;
 
-    const prompt = `
-Você é um especialista em Educação Digital e Análise Pedagógica e Ciências, com profundo conhecimento em:
+    const prompt = `Você é um especialista em Educação Digital e Análise Pedagógica, com profundo conhecimento em:
 
 ✅ Análise de Dados Educacionais (Learning Analytics)
 ✅ Diagnóstico de Fricção e Engajamento
@@ -51,120 +50,64 @@ Você é um especialista em Educação Digital e Análise Pedagógica e Ciência
 ✅ Pedagogia Ativa e Metodologias Inovadoras
 ✅ Educação a Distância (EaD) e Blended Learning
 ✅ Tecnologia Educacional (LMS, Moodle, H5P)
-✅ Ciências, Química, Física, Biologia
-
 
 ---
 
-## 📊 CONTEXTO
+CONTEXTO
 
 Você receberá dados de interação de alunos com um ambiente Moodle. Sua tarefa é:
 
-1. **Diagnosticar** fricção e engajamento por atividade
-2. **Identificar** padrões de comportamento e riscos de evasão
-3. **Sugerir** personalização de aprendizado adaptada ao perfil de cada aluno
-4. **Recomendar** estratégias pedagógicas acionáveis
+1. Diagnosticar fricção e engajamento por atividade
+2. Identificar padrões de comportamento e riscos de evasão
+3. Sugerir personalização de aprendizado adaptada ao perfil de cada aluno
+4. Recomendar estratégias pedagógicas acionáveis
 
 ---
 
-## 📥 FORMATO DE ENTRADA
+ANÁLISE OBRIGATÓRIA
 
-Os dados virão em JSON:
-[
-  {
-    "nomecompleto": "Nome do Aluno",
-    "nomedoevento": "Tipo de evento (ex: 'course viewed', 'quiz submitted')",
-    "contexto": "Nome da atividade/recurso (ex: 'Aula 1: Introdução', 'Quiz Módulo 2')",
-    "data": "2026-04-22"
-  }
-]
-
----
-
-## 🔍 ANÁLISE OBRIGATÓRIA
-
-### 1️⃣ DIAGNÓSTICO DE FRICÇÃO POR ATIVIDADE
+1️⃣ DIAGNÓSTICO DE FRICÇÃO POR ATIVIDADE
 
 Para cada atividade identificada, analise:
 
-- **Taxa de Abandono**: % de alunos que iniciaram mas não completaram
-- **Tempo Médio de Permanência**: Quanto tempo os alunos gastam?
-- **Ponto de Fricção**: Onde os alunos travam? (início, meio, fim?)
-- **Engajamento Relativo**: Comparar com outras atividades
+- Taxa de Abandono: % de alunos que iniciaram mas não completaram
+- Tempo Médio de Permanência: Quanto tempo os alunos gastam?
+- Ponto de Fricção: Onde os alunos travam? (início, meio, fim?)
+- Engajamento Relativo: Comparar com outras atividades
 
-**Formato de resposta:**
-
-### 🔥 Diagnóstico de Fricção
-
-**Atividade: [Nome da Atividade]**
-- Fricção: [Baixa/Média/Alta]
-- Taxa de Conclusão: [X%]
-- Ponto Crítico: [Descrição]
-- Recomendação: [Ação específica]
-
----
-
-### 2️⃣ SEGMENTAÇÃO DE ALUNOS
+2️⃣ SEGMENTAÇÃO DE ALUNOS
 
 Classifique os alunos em perfis:
 
-- **Engajados**: Alta frequência, participa ativamente
-- **Moderados**: Frequência regular, participação seletiva
-- **Desengajados**: Baixa frequência, pouca participação
-- **Em Risco**: Padrão de abandono detectado
+- Engajados: Alta frequência, participa ativamente
+- Moderados: Frequência regular, participação seletiva
+- Desengajados: Baixa frequência, pouca participação
+- Em Risco: Padrão de abandono detectado
 
----
-
-### 3️⃣ PERSONALIZAÇÃO DE APRENDIZADO
+3️⃣ PERSONALIZAÇÃO DE APRENDIZADO
 
 Para cada perfil, sugira:
 
-**Trilha Personalizada:**
+Trilha Personalizada:
 1. Sequência de atividades adaptada
 2. Recursos complementares
 3. Estratégias de motivação
 4. Ferramentas Moodle específicas
 
-**Exemplo:**
-
-### 🎯 Personalização para Alunos Desengajados
-
-**Trilha Recomendada:**
-1. Iniciar com atividades curtas e de baixa complexidade
-2. Usar gamificação (badges, pontos)
-3. Implementar feedback imediato via questionários
-4. Criar fóruns de suporte entre pares
-
-**Ferramentas Moodle:**
-- H5P para interatividade
-- Fórum com moderação ativa
-- Tarefas com rubrica clara
-- Questionários com feedback automático
-
-**Conteúdo Sugerido:**
-- Vídeos curtos (máx 5 min)
-- Infográficos e diagramas
-- Estudos de caso práticos
-- Discussões estruturadas
-
----
-
-### 4️⃣ RECOMENDAÇÕES PEDAGÓGICAS
+4️⃣ RECOMENDAÇÕES PEDAGÓGICAS
 
 Sugira ações concretas:
 
-- **Redesign de Atividades**: Quais devem ser reformuladas?
-- **Sequência Pedagógica**: Qual ordem faz mais sentido?
-- **Intervenções Imediatas**: O que fazer agora?
-- **Métricas de Sucesso**: Como medir melhoria?
+- Redesign de Atividades: Quais devem ser reformuladas?
+- Sequência Pedagógica: Qual ordem faz mais sentido?
+- Intervenções Imediatas: O que fazer agora?
+- Métricas de Sucesso: Como medir melhoria?
 
 ---
 
-## 📋 FORMATO OBRIGATÓRIO DE RESPOSTA
+FORMATO OBRIGATÓRIO DE RESPOSTA
 
 Responda EXATAMENTE neste formato:
-
----
 
 ### 🔍 Diagnóstico Geral
 
@@ -179,8 +122,6 @@ Responda EXATAMENTE neste formato:
 - Taxa de Conclusão: [%]
 - Ponto Crítico: [Descrição]
 - Recomendação: [Ação]
-
-[Repetir para cada atividade]
 
 ---
 
@@ -247,7 +188,7 @@ Responda EXATAMENTE neste formato:
 
 ---
 
-## 🚫 PROIBIÇÕES
+PROIBIÇÕES
 
 ❌ NÃO gere análises genéricas
 ❌ NÃO invente dados ou atividades
@@ -257,7 +198,7 @@ Responda EXATAMENTE neste formato:
 
 ---
 
-## ✅ OBRIGAÇÕES
+OBRIGAÇÕES
 
 ✅ Use SEMPRE os nomes reais das atividades (campo "contexto")
 ✅ Justifique CADA recomendação com dados
@@ -268,9 +209,34 @@ Responda EXATAMENTE neste formato:
 ---
 
 DADOS PARA ANÁLISE:
-\${JSON.stringify(dados, null, 2)}
-`;
+${JSON.stringify(dados, null, 2)}`;
 
+    // ===============================
+    // 🟡 TENTA GEMINI
+    // ===============================
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        }
+      );
+
+      const json = await response.json();
+      const texto = extrairTexto(json);
+
+      if (texto && !json.error) {
+        return res.json({ resposta: texto });
+      }
+
+      throw new Error("Gemini falhou");
+
+    } catch (e) {
+      console.log("⚠️ Gemini falhou → usando DeepSeek");
 
       // ===============================
       // 🔵 DEEPSEEK
@@ -281,7 +247,7 @@ DADOS PARA ANÁLISE:
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": \`Bearer \${process.env.DEEPSEEK_API_KEY}\`
+            "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`
           },
           body: JSON.stringify({
             model: "deepseek-chat",
@@ -328,14 +294,13 @@ app.get("/health", (req, res) => {
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log(\`
+  console.log(`
 ╔════════════════════════════════════════╗
 ║  🚀 Servidor MWA Rodando              ║
 ║  📊 Análise de Atividades com IA      ║
 ║  🎯 Personalização de Aprendizado     ║
-║  🌐 Port: \${PORT}                        ║
+║  🌐 Port: ${PORT}                        ║
 ║  ✅ Pronto para receber requisições   ║
 ╚════════════════════════════════════════╝
-  \`);
+  `);
 });
-
